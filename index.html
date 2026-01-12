@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>阿斯塔纳轻轨术语有声手册</title>
+    <style>
+        :root {
+            --primary: #0066cc; /* 工程蓝 */
+            --bg: #f7f8fa;
+            --card-bg: #ffffff;
+            --text-main: #333;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-main);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            color: var(--primary);
+        }
+        .header p {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        /* 搜索框样式 */
+        .search-container {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            padding: 10px 0;
+            z-index: 100;
+        }
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            outline: none;
+        }
+        .search-box:focus {
+            border-color: var(--primary);
+        }
+        /* 卡片样式 */
+        .term-list {
+            margin-top: 10px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .zh-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .id-tag {
+            font-size: 12px;
+            color: #fff;
+            background: #ccc;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .en-text {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.4;
+        }
+        /* 按钮组 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 12px;
+        }
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:active { opacity: 0.7; }
+        .btn-zh { background: #e6f0ff; color: #0066cc; }
+        .btn-en { background: #fff4e6; color: #ff8800; }
+        .btn-icon { font-size: 16px; }
+        
+        .empty-tip {
+            text-align: center;
+            color: #999;
+            margin-top: 50px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>ASTANA LRT GLOSSARY</h1>
+    <p>阿斯塔纳轻轨项目术语手册</p>
+</div>
+
+<div class="search-container">
+    <input type="text" id="search" class="search-box" placeholder="🔍 搜索中文或英文 / Search...">
+</div>
+
+<div id="list" class="term-list"></div>
+
+<script>
+    // 自动装载的数据（基于您提供的文档）
+    const terms = [
+        {id: "1", zh: "城市轨道交通", en: "urban rail transit"},
+        {id: "2", zh: "运营设备", en: "operational equipment"},
+        {id: "3", zh: "运营设施", en: "operational facilities"},
+        {id: "4", zh: "冷滑", en: "propelled train dynamic test"},
+        {id: "5", zh: "热滑", en: "powered train dynamic test"},
+        {id: "6", zh: "系统联调", en: "system integration test"},
+        {id: "7", zh: "甩项工程", en: "rejection project"},
+        {id: "8", zh: "三权移交", en: "handover of three rights"},
+        {id: "9", zh: "试运行", en: "trial run"},
+        {id: "10", zh: "正式运营", en: "formal operation"},
+        {id: "11", zh: "运营单位", en: "operation company"},
+        {id: "12", zh: "行车组织", en: "train operation organization"},
+        {id: "13", zh: "客运组织", en: "passenger service planning"},
+        {id: "14", zh: "客运服务", en: "passenger transport service"},
+        {id: "15", zh: "运输能力", en: "transportation capacity of system"},
+        {id: "16", zh: "限界", en: "gauge"},
+        {id: "17", zh: "设备限界", en: "equipment gauge"},
+        {id: "18", zh: "建筑限界", en: "construction gauge"},
+        {id: "26", zh: "远端控制", en: "remote control"},
+        {id: "28", zh: "全自动运行系统", en: "fully automatic operation"},
+        {id: "L-1", zh: "正线", en: "main line"},
+        {id: "L-2", zh: "配线", en: "siding"},
+        {id: "L-4", zh: "折返线", en: "turnaround track"},
+        {id: "L-12", zh: "线路设计速度", en: "design speed"}
+        // ... (此处为演示，完整版只需将Excel数据转为JSON粘贴在此处即可)
+    ];
+
+    const listEl = document.getElementById('list');
+    const searchInput = document.getElementById('search');
+
+    // 语音播放核心功能
+    function speak(text, lang) {
+        window.speechSynthesis.cancel(); // 停止上一个发音
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = lang === 'zh' ? 'zh-CN' : 'en-US';
+        u.rate = 0.9; // 语速稍慢
+        window.speechSynthesis.speak(u);
+    }
+
+    function render(data) {
+        listEl.innerHTML = "";
+        if(data.length === 0) {
+            listEl.innerHTML = '<div class="empty-tip">未找到相关术语<br>No terms found</div>';
+            return;
+        }
+        data.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `
+                <div class="card-top">
+                    <span class="zh-text">${item.zh}</span>
+                    <span class="id-tag">${item.id}</span>
+                </div>
+                <div class="en-text">${item.en}</div>
+                <div class="btn-group">
+                    <button class="btn btn-zh" onclick="speak('${item.zh}', 'zh')">
+                        <span class="btn-icon">🔊</span> 中文
+                    </button>
+                    <button class="btn btn-en" onclick="speak('${item.en}', 'en')">
+                        <span class="btn-icon">🔊</span> English
+                    </button>
+                </div>
+            `;
+            listEl.appendChild(div);
+        });
+    }
+
+    // 搜索逻辑
+    searchInput.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        const filtered = terms.filter(t => 
+            t.zh.includes(val) || 
+            t.en.toLowerCase().includes(val) || 
+            t.id.toLowerCase().includes(val)
+        );
+        render(filtered);
+    });
+
+    // 初始加载
+    render(terms);
+</script>
+</body>
+</html>
